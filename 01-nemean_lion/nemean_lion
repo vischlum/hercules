@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Port 666 was used for the online mode of Doom
+# But if you prefer an unused port 12221 is good
+PORT=666
+
+# Make sure that root is running the script
+if [[ $EUID -ne 0 ]]; then
+	echo "You must be root to run this script"
+	exit 1
+fi
+
+# Make sure that ssh is installed
+apt-get -y install ssh
+
+#Backup sshd_config
+cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
+
+#Replace the port number
+sed -i "s/^Port .*/Port $PORT/g" /etc/ssh/sshd_config
+
+#Restart ssh
+systemctl restart ssh
